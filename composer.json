@@ -1,5 +1,5 @@
 {
-    "name": "iivannov/ElasticCommander",
+    "name": "iivannov/elastic-commander",
     "description": "Wrapper for the official Elasticsearch PHP Client",
     "keywords": ["php", "elastic", "elasticsearch", "client"],
     "homepage": "",
