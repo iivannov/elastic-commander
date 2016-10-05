@@ -1,0 +1,22 @@
+{
+    "name": "iivannov/ElasticCommander",
+    "description": "Wrapper for the official Elasticsearch PHP Client",
+    "keywords": ["php", "elastic", "elasticsearch", "client"],
+    "homepage": "",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Ivan Ivanov",
+            "email": "iivannov@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php" : ">=5.4.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Iivannov\\ElasticCommander\\": "src"
+        }
+    }
+}
