@@ -53,6 +53,7 @@ class Search
     public function ids() {
 
         $ids = [];
+
         foreach ($this->response['hits']['hits'] as $hit) {
             $ids[] = $hit['_id'];
         }
@@ -76,9 +77,39 @@ class Search
 
     public function query($query, $sort = null, $size = 20, $from = 0)
     {
+        $this->response = $this->search($query, $sort, $size, $from);
+
+        return $this;
+    }
+
+
+    public function criteria(CriteriaInterface $criteria)
+    {
+        $this->response = $this->search(
+            $criteria->query(),
+            $criteria->sort(),
+            $criteria->size(),
+            $criteria->from()
+        );
+
+        return $this;
+    }
+
+
+    /**
+     * Performs the search by the given parameters
+     *
+     * @param $query
+     * @param $sort
+     * @param $size
+     * @param $from
+     * @param $body
+     */
+    private function search($query, $sort, $size, $from)
+    {
         $body['query'] = $query;
 
-        if($sort)
+        if ($sort)
             $body['sort'] = $sort;
 
         $params = [
@@ -89,12 +120,7 @@ class Search
             'from' => $from
         ];
 
-        $this->response = $this->client->search($params);
-
-        return $this;
+        return $this->client->search($params);
     }
-
-
-
 
 }
