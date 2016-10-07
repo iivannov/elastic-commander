@@ -2,6 +2,8 @@
 
 namespace Iivannov\ElasticCommander;
 
+use Iivannov\ElasticCommander\Contracts\CriteriaInterface;
+
 class Search
 {
 
