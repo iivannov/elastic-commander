@@ -22,6 +22,8 @@ class Commander
 
     protected $search;
 
+    protected $count;
+
     public function __construct($indexName, $hosts = [])
     {
         $this->indexName = $indexName;
@@ -33,6 +35,17 @@ class Commander
     }
 
 
+    public function reset($indexName)
+    {
+        $this->indexName = $indexName;
+
+        $this->search = null;
+        $this->document = null;
+        $this->indexManager = null;
+
+        return $this;
+    }
+
     public function index()
     {
         if ($this->indexManager == null)
@@ -40,12 +53,6 @@ class Commander
 
         return $this->indexManager;
     }
-
-    public function mapping($mapping)
-    {
-        $this->client->indices()->putMapping($mapping);
-    }
-
 
     public function document($type)
     {
@@ -63,8 +70,18 @@ class Commander
         return $this->search;
     }
 
+    public function count($type)
+    {
+        if ($this->count == null)
+            $this->count = new Count($this->client, $this->indexName, $type);
 
+        return $this->count;
+    }
 
+    public function mapping($mapping)
+    {
+        $this->client->indices()->putMapping($mapping);
+    }
 
 
 }

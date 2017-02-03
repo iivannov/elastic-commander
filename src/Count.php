@@ -4,7 +4,7 @@ namespace Iivannov\ElasticCommander;
 
 use Iivannov\ElasticCommander\Contracts\CriteriaInterface;
 
-class Search
+class Count
 {
 
     /**
@@ -49,37 +49,14 @@ class Search
         if(!$this->response)
             return 0;
 
-        return $this->response['hits']['total'];
-    }
-
-    public function ids() {
-
-        $ids = [];
-
-        foreach ($this->response['hits']['hits'] as $hit) {
-            $ids[] = $hit['_id'];
-        }
-
-        return $ids;
-    }
-
-    public function hits() {
-
-        $hits = [];
-        foreach ($this->response['hits']['hits'] as $hit) {
-            $object = (object) $hit['_source'];
-            $object->sort = isset($hit['sort']) ? reset($hit['sort']) : null;
-            $hits[$hit['_id']] = $object;
-        }
-
-        return $hits;
+        return $this->response['count'] ?? 0;
     }
 
 
 
-    public function query($query, $sort = null, $size = 20, $from = 0)
+    public function query($query)
     {
-        $this->response = $this->search($query, $sort, $size, $from);
+        $this->response = $this->count($query);
 
         return $this;
     }
@@ -87,11 +64,8 @@ class Search
 
     public function criteria(CriteriaInterface $criteria)
     {
-        $this->response = $this->search(
-            $criteria->query(),
-            $criteria->sort(),
-            $criteria->size(),
-            $criteria->from()
+        $this->response = $this->count(
+            $criteria->query()
         );
 
         return $this;
@@ -107,29 +81,17 @@ class Search
      * @param $from
      * @param $body
      */
-    private function search($query, $sort, $size, $from)
+    private function count($query)
     {
         $body['query'] = $query;
-
-        if ($sort)
-            $body['sort'] = $sort;
 
         $params = [
             'index' => $this->index,
             'type' => $this->type,
-            'body' => $body,
-            'size' => $size,
-            'from' => $from
+            'body' => $body
         ];
 
-        return $this->client->search($params);
-    }
-
-    public function count()
-    {
-        $this->response = $this->client->count();
-
-        return $this;
+        return $this->client->count($params);
     }
 
 
