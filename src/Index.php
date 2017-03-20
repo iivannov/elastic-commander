@@ -39,24 +39,34 @@ class Index
     /**
      * Completely resets the index by deleting it
      * and the recreating it
+     * @param null $properties
      */
-    public function reset()
+    public function reset($properties = null)
     {
         $this->delete();
-        $this->create();
+        $this->create($properties);
     }
 
     /**
      * Create an index if it doesn't exist
+     * @param null $properties
      */
-    public function create()
+    public function create($properties = null)
     {
         $index = $this->index();
 
-        if (!$this->client->indices()->exists($index))
-            $this->client->indices()->create($index);
-    }
+        if (!$this->client->indices()->exists($index)) {
 
+            if ($properties) {
+                $index = array_merge($index, $properties);
+
+            }
+
+
+            $this->client->indices()->create($index);
+
+        }
+    }
     /**
      * Deletes an index
      */
