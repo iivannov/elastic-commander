@@ -28,73 +28,73 @@ class Search
      */
     protected $type;
 
+    /**
+     * The number of hits returned
+     *
+     * @var int
+     */
+    protected $size;
 
-    protected $response;
+    /**
+     * The result offset
+     *
+     * @var int
+     */
+    protected $from;
+
+    /**
+     * The result of the executed query
+     *
+     * @var Result
+     */
+    protected $result;
+
 
     public function __construct(\Elasticsearch\Client $client, $index, $type)
     {
         $this->client = $client;
         $this->index = $index;
         $this->type = $type;
+
+        $this->result = new Result();
     }
 
-
-    public function response()
-    {
-        return $this->response;
-    }
-
-    public function total() {
-
-        if(!$this->response)
-            return 0;
-
-        return $this->response['hits']['total'];
-    }
-
-    public function ids() {
-
-        $ids = [];
-
-        foreach ($this->response['hits']['hits'] as $hit) {
-            $ids[] = $hit['_id'];
-        }
-
-        return $ids;
-    }
-
-    public function hits() {
-
-        $hits = [];
-        foreach ($this->response['hits']['hits'] as $hit) {
-            $object = (object) $hit['_source'];
-            $object->sort = isset($hit['sort']) ? reset($hit['sort']) : null;
-            $hits[$hit['_id']] = $object;
-        }
-
-        return $hits;
-    }
-
-
-
+    /**
+     * Executes a custom ElasticSearch query
+     *
+     * @param $query
+     * @param null $sort
+     * @param int $size
+     * @param int $from
+     * @return Result
+     */
     public function query($query, $sort = null, $size = 20, $from = 0)
     {
-        $this->response = $this->search($query, $sort, $size, $from);
+        $this->size = $size;
+        $this->from = $from;;
 
-        return $this;
+        $response = $this->search($query, $sort);
+
+        return $this->result->setResponse($response, $this->size, $this->from);
     }
 
-
+    /**
+     * Executes a query based on a given Criteria
+     *
+     * @param CriteriaInterface $criteria
+     * @return Result
+     */
     public function criteria(CriteriaInterface $criteria)
     {
-        $this->response = $this->search(
+        $this->size = $criteria->size();
+        $this->from = $criteria->from();
+
+        $response = $this->search(
             $criteria->query(),
-            $criteria->sort(),
-            $criteria->size(),
-            $criteria->from()
+            $criteria->sort()
         );
 
-        return $this;
+        return $this->result->setResponse($response, $this->size, $this->from);
     }
 
 
@@ -103,33 +103,22 @@ class Search
      *
      * @param $query
      * @param $sort
-     * @param $size
-     * @param $from
-     * @param $body
      */
-    private function search($query, $sort, $size, $from)
+    private function search($query, $sort)
     {
         $body['query'] = $query;
 
-        if ($sort)
+        if ($sort) {
             $body['sort'] = $sort;
+        }
 
-        $params = [
+        return $this->client->search([
             'index' => $this->index,
             'type' => $this->type,
             'body' => $body,
-            'size' => $size,
-            'from' => $from
-        ];
-
-        return $this->client->search($params);
-    }
-
-    public function count()
-    {
-        $this->response = $this->client->count();
-
-        return $this;
+            'size' => $this->size,
+            'from' => $this->from
+        ]);
     }
 
 
