@@ -50,6 +50,26 @@ class Result
     }
 
     /**
+     * Return the number of results in the response
+     *
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->response['hits']['hits']);
+    }
+
+    /**
+     * Return the size for the query executed
+     *
+     * @return int
+     */
+    public function size()
+    {
+        return $this->size;
+    }
+
+    /**
      * Return the current page
      *
      * @return int
