@@ -14,9 +14,15 @@ class Commander
      */
     protected $client;
 
+    /**
+     * The name of the index currently used
+     *
+     * @var string
+     */
     protected $indexName;
 
-    protected $indexManager;
+
+    protected $index;
 
     protected $document;
 
@@ -24,14 +30,21 @@ class Commander
 
     protected $count;
 
-    public function __construct($indexName, $hosts = [])
+    public function __construct($indexName, $hosts = [], $handler = null)
     {
         $this->indexName = $indexName;
 
-        if ($hosts)
-            $this->client = ClientBuilder::create()->setHosts($hosts)->build();
-        else
-            $this->client = ClientBuilder::create()->build();
+        $builder = ClientBuilder::create();
+
+        if ($hosts) {
+            $builder->setHosts($hosts);
+        }
+
+        if ($handler) {
+            $builder->setHandler($handler);
+        }
+
+        $this->client = $builder->build();
     }
 
 
@@ -39,19 +52,20 @@ class Commander
     {
         $this->indexName = $indexName;
 
+        $this->index = null;
         $this->search = null;
         $this->document = null;
-        $this->indexManager = null;
+        $this->count = null;
 
         return $this;
     }
 
     public function index()
     {
-        if ($this->indexManager == null)
-            $this->indexManager = new Index($this->client, $this->indexName);
+        if ($this->index == null)
+            $this->index = new Index($this->client, $this->indexName);
 
-        return $this->indexManager;
+        return $this->index;
     }
 
     public function document($type)
