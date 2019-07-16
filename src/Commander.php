@@ -60,6 +60,12 @@ class Commander
         return $this;
     }
 
+    public function on($index)
+    {
+        $this->reset($index);
+        return $this;
+    }
+
     public function index()
     {
         if ($this->index == null)
@@ -80,6 +86,14 @@ class Commander
     {
         if ($this->search == null)
             $this->search = new Search($this->client, $this->indexName, $type);
+
+        return $this->search;
+    }
+
+    public function suggest($type)
+    {
+        if ($this->search == null)
+            $this->search = new Suggest($this->client, $this->indexName, $type);
 
         return $this->search;
     }

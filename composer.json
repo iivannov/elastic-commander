@@ -1,23 +1,29 @@
 {
-    "name": "iivannov/elastic-commander",
-    "description": "Wrapper for the official Elasticsearch PHP Client",
-    "keywords": ["php", "elastic", "elasticsearch", "client"],
-    "homepage": "",
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "Ivan Ivanov",
-            "email": "iivannov@gmail.com",
-            "role": "Developer"
-        }
-    ],
-    "require": {
-        "php" : ">=5.4.0",
-        "elasticsearch/elasticsearch": "~6.0"
-    },
-    "autoload": {
-        "psr-4": {
-            "Iivannov\\ElasticCommander\\": "src"
-        }
+  "version": "6.7.0",
+  "name": "iivannov/elastic-commander",
+  "description": "Wrapper for the official Elasticsearch PHP Client",
+  "type": "library",
+  "keywords": [
+    "php",
+    "elastic",
+    "elasticsearch",
+    "client"
+  ],
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Ivan Ivanov",
+      "email": "iivannov@gmail.com",
+      "role": "Developer"
     }
+  ],
+  "require": {
+    "php": "^7.1",
+    "elasticsearch/elasticsearch": "^6.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "Iivannov\\ElasticCommander\\": "src"
+    }
+  }
 }
