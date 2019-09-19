@@ -13,6 +13,13 @@ class Result
     protected $from;
 
 
+    public function __construct($response = null, $size = null, $from = null)
+    {
+        $this->response = $response;
+        $this->size = $size;
+        $this->from = $from;
+    }
+
     /**
      * @param $response
      * @return self

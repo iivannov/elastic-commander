@@ -47,7 +47,6 @@ class Commander
         $this->client = $builder->build();
     }
 
-
     public function reset($indexName)
     {
         $this->indexName = $indexName;
@@ -104,6 +103,14 @@ class Commander
             $this->count = new Count($this->client, $this->indexName, $type);
 
         return $this->count;
+    }
+
+    public function multiple()
+    {
+        if ($this->search == null)
+            $this->search = new MultiSearch($this->client);
+
+        return $this->search;
     }
 
     public function mapping($mapping)
