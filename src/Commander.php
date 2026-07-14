@@ -30,7 +30,7 @@ class Commander
 
     protected $count;
 
-    public function __construct($indexName, $hosts = [], $handler = null)
+    public function __construct($indexName, $hosts = [], $handler = null, array $connection = [])
     {
         $this->indexName = $indexName;
 
@@ -42,6 +42,10 @@ class Commander
 
         if ($handler) {
             $builder->setHandler($handler);
+        }
+
+        if ($connection) {
+            $builder->setConnectionParams($connection);
         }
 
         $this->client = $builder->build();
